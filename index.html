@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Christmas Carol – Interactive Class Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9edf2;--page:#fbfaf6;--ink:#1c2740;--mute:#5d6882;--gold:#b97a0c;--green:#2f6b43;--red:#a8322d;--line:#d6d9e0;--hl:#fff1c4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1424;--page:#18213a;--ink:#eef0f6;--mute:#a4adc4;--gold:#f0b94d;--green:#6fcf8e;--red:#ff8a80;--line:#2c3757;--hl:#3b3a22}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Nunito,system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px 12px 90px}
+.page{background:var(--page);border:1px solid var(--line);border-left:10px solid var(--ink);border-radius:4px 14px 14px 4px;padding:22px 22px 28px;min-height:70vh}
+h1,h2{font-family:Fraunces,Georgia,serif;margin:.2em 0 .5em;line-height:1.2}
+h1{font-size:2.4rem}h2{font-size:1.5rem}
+.cover{text-align:center;padding-top:8vh}.cover p{color:var(--mute);max-width:46ch;margin:.6em auto}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line);font-size:.9rem}
+button,select{font:inherit;color:var(--ink);background:var(--page);border:1.5px solid var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+button.pri{background:var(--ink);color:var(--page);font-weight:700}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.line{display:flex;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer;align-items:baseline}
+.line:hover{background:var(--hl)}.line.on{background:var(--hl);box-shadow:inset 4px 0 var(--gold)}
+.line.mine{outline:2px dashed var(--green)}
+.who{flex:0 0 118px;font-weight:700;color:var(--gold);font-size:.92rem}.who.n{color:var(--mute);font-style:italic}
+.txt{flex:1}.n+.txt{font-style:italic;color:var(--mute)}
+.q{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+.q p{margin:0 0 8px;font-weight:700}.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button.ok{background:var(--green);border-color:var(--green);color:#fff}.opts button.no{background:var(--red);border-color:var(--red);color:#fff}
+.score{font-weight:700;color:var(--green)}
+nav{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);display:flex;gap:10px;justify-content:center;align-items:center}
+.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:380px}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--line);cursor:pointer}.dots i.c{background:var(--gold)}
+@media(max-width:560px){.who{flex-basis:84px}.page{padding:16px 12px}h1{font-size:1.9rem}}
+@media(prefers-reduced-motion:no-preference){.page{animation:f .35s}@keyframes f{from{opacity:.2}}}
+</style></head><body>
+<main><div id="pg" class="page" aria-live="polite"></div></main>
+<nav><button id="pv">‹ Back</button><div class="dots" id="dots"></div><button id="nx" class="pri">Next ›</button></nav>
+<script>
+const P={Scrooge:.8,Marley:.55,Bob:1.1,Fred:1.2,"Tiny Tim":1.7,"Mrs Cratchit":1.3,Past:1.4,Present:.7,Future:.5};
+const S=[
+["Scene 1 – A Christmas Eve in London",["Narrator|It is Christmas Eve in London. The streets are full of lights.","Londoner|It is very cold today!","Londoner|Merry Christmas, everyone!","Narrator|But Ebenezer Scrooge does not like Christmas. He is cold and mean.","Scrooge|Bah! Humbug! Christmas is a waste of time!","Bob|Good morning, Mr Scrooge.","Scrooge|Good morning? It is cold! Go to work, Bob!","Fred|Merry Christmas, Uncle!","Scrooge|Bah! Humbug!","Fred|Come to my house tomorrow. We are having Christmas dinner.","Scrooge|No! I don’t want a party.","Fred|There is a big table in our dining room. There are chairs for everyone!","Scrooge|I don’t care about your house or your party!","Narrator|Fred leaves. Two charity collectors come into the office.","Collector 1|Good morning, sir. We are collecting money for poor families.","Collector 2|Many people have no warm house and no food.","Scrooge|Are there poor people? Then, let them go to work!","Collector 1|Please, sir. Can you help us?","Scrooge|No! Good day!","Narrator|Bob works in a small, cold office. Scrooge goes home alone."]],
+["Scene 2 – Marley’s Ghost",["Narrator|That night, Scrooge is in his big house.","Narrator|There is a fireplace in the living room. There is a chair next to it. But the house is silent.","Scrooge|I am tired. I am going to bed.","Marley|Scrooge!","Scrooge|Who is there?","Marley|It is me, Jacob Marley!","Scrooge|Marley! You are dead!","Marley|Yes. I was selfish. Now I must walk and suffer.","Scrooge|Why are you here?","Marley|You can change your life. Three Spirits will visit you.","Scrooge|Three Spirits?","Marley|Listen to them, Scrooge. Good night!","Narrator|Marley disappears. Scrooge is very frightened."]],
+["Scene 3 – The Ghost of Christmas Past",["Narrator|At one o’clock, the first Spirit comes.","Past|Scrooge, wake up! I am the Ghost of Christmas Past.","Scrooge|Who are you?","Past|Come with me. Look at your old home.","Narrator|There is a bed near the window. There is a desk next to the bed.","Past|Look! You are a young boy. You are alone at Christmas.","Scrooge|I remember this room. I was a lonely child.","Past|Now look! Your sister is here. She loves you.","Scrooge|I remember my sister. She was very kind.","Narrator|Now we are at Mr Fezziwig’s Christmas party. There is music, food and dancing.","Scrooge|We were happy! I was happy!","Past|And look at Belle, the woman you loved.","Scrooge|Stop! I don’t want to see this!","Narrator|The first Spirit disappears."]],
+["Scene 4 – The Ghost of Christmas Present",["Narrator|The second Spirit arrives.","Present|Come, Scrooge! I am the Ghost of Christmas Present.","Scrooge|Where are we going?","Present|To Bob Cratchit’s home.","Narrator|The Cratchit family is in a small living room.","Mrs Cratchit|Welcome, everyone! Dinner is ready.","Bob|There is a Christmas pudding on the table!","Tiny Tim|There are six chairs around the table. We are all together!","Mrs Cratchit|The kitchen is small, but our home is full of love.","Scrooge|They are poor. But they are happy.","Present|Look at Tiny Tim. He is ill, but he is kind.","Tiny Tim|God bless us, every one!","Scrooge|Will Tiny Tim live?","Present|If things do not change, he may die.","Scrooge|Oh, no! Please, tell me he will be well!","Narrator|The Spirit takes Scrooge to Fred’s house.","Fred|Merry Christmas, everyone! Come in!","Emma|Hello! I’m Emma. I’m from Scotland. I’m Scottish.","Liam|Hi! I’m Liam. I’m from Ireland. I’m Irish.","Oliver|Hello! I’m Oliver. I’m from England. I’m English.","Megan|Hi! I’m Megan. I’m from Wales. I’m Welsh.","Sofia|Hello! I’m Sofia. I’m from Spain. I’m Spanish.","Hans|Hi! I’m Hans. I’m from Germany. I’m German.","Giulia|Hello! I’m Giulia. I’m from Italy. I’m Italian.","Fred|What’s your name? Where are you from?","Emma|My name is Emma. I’m from Scotland.","Fred|Have you got any brothers or sisters?","Liam|Yes, I have. I’ve got one sister.","Fred|Have you got any pets?","Sofia|Yes, I have. I’ve got a dog.","Fred|What are your hobbies?","Hans|I like playing football.","Megan|I like singing.","Giulia|…and I like dancing!","Oliver|The Union Jack is the flag of the United Kingdom.","Narrator|Everyone is happy. Scrooge watches the party.","Scrooge|Fred invited me. And I said no. I am sorry.","Present|Remember this day, Scrooge.","Narrator|The second Spirit disappears."]],
+["Scene 5 – The Ghost of Christmas Yet to Come",["Narrator|The last Spirit arrives. It does not speak.","Future|(The Spirit points silently.)","Scrooge|Show me the future.","Emma|A rich old man is dead. Nobody is sad.","Liam|Nobody comes to his house.","Oliver|His rooms are empty. There is no one at the table.","Scrooge|Who is this lonely man?","Narrator|The Spirit takes Scrooge to a quiet grave.","Future|(The Spirit points to the name on the grave.)","Scrooge|No! It is my name! I am the man!","Scrooge|Please! I can change. I will be kind. I will help people!","Narrator|The Spirit disappears. Scrooge wakes up in his own bed."]],
+["Scene 6 – Christmas Morning",["Narrator|It is Christmas morning! Scrooge is in his bedroom.","Scrooge|I am alive! It is Christmas Day!","Scrooge|There is a window in my bedroom. I can see the street!","Scrooge|What day is it?","Emma|It is Christmas Day, sir!","Scrooge|Wonderful! I am not too late!","Scrooge|Here is a big turkey for the Cratchit family!","Narrator|Scrooge sends a turkey to Bob’s house.","Scrooge|And now I will visit Fred!","Fred|Uncle Scrooge! You are here!","Scrooge|Merry Christmas, Fred! May I join your party?","Fred|Of course! Come in!","Narrator|The next day, Scrooge is kind to Bob.","Scrooge|Bob, I will help your family. You will have more money and a better home.","Bob|Thank you, Mr Scrooge!","Mrs Cratchit|Welcome, Mr Scrooge!","Tiny Tim|God bless us, every one!","Narrator|Scrooge keeps his promise. He helps the Cratchit family.","Scrooge|I will keep Christmas in my heart, every day!","All|MERRY CHRISTMAS!"]]
+].map(([t,l])=>({t,l:l.map(x=>x.split("|"))}));
+const W=["Scrooge","Fred","Bob"];
+const A=[
+["Activity 1 – Read and answer","Choose the right answer.",0,[["What does Scrooge say about Christmas?",["It is a waste of time","It is wonderful","It is a party"],0],["Who visits Scrooge first at night?",["Fred","Marley","The Ghost of Christmas Past"],1],["How many Spirits visit Scrooge?",["Two","Three","Four"],1],["How many chairs are around the Cratchit table?",["Four","Five","Six"],2],["What does Scrooge send to Bob’s house?",["A turkey","A pudding","Money"],0]]],
+["Activity 2 – Who said it?","Choose the character.",0,[["“Bah! Humbug!”",["Scrooge","Fred","Bob"],0],["“God bless us, every one!”",["Marley","Tiny Tim","Fred"],1],["“Three Spirits will visit you.”",["Marley","Bob","Scrooge"],0],["“Come to my house tomorrow.”",["Bob","Scrooge","Fred"],2],["“Good morning, Mr Scrooge.”",["Bob","Fred","Marley"],0]]],
+["Activity 3 – Complete the sentence","There is / There are, prepositions and countries.",0,[["There ___ a big table in the dining room.",["is","are"],0],["There ___ six chairs around the table.",["is","are"],1],["There is a desk ___ to the bed.",["next","on","from"],0],["There is a chair next to the ___.",["fireplace","pudding","window"],0],["I’m from Italy. I’m ___.",["Italy","Italian","Italians"],1],["___ you got any pets?",["Have","Has","Do"],0]]],
+["Activity 4 – Listening","Press ▶, listen, then choose the sentence you hear.",1,[["There is a Christmas pudding on the table!",["There is a Christmas pudding on the table!","There are six chairs around the table!","There is a big table in our dining room."],0],["I remember my sister. She was very kind.",["I remember this room. I was a lonely child.","I remember my sister. She was very kind.","I am not too late!"],1],["Have you got any pets?",["Have you got any brothers or sisters?","What are your hobbies?","Have you got any pets?"],2],["Here is a big turkey for the Cratchit family!",["Here is a big turkey for the Cratchit family!","Welcome, everyone! Dinner is ready.","Merry Christmas, Fred!"],0]]]
+];
+const pages=[{c:1},...S.map((s,i)=>({s:i})),...A.map((a,i)=>({a:i})),{e:1}];
+let cur=0,run=0,role="",go=null,rate=0.9;
+const $=id=>document.getElementById(id),pg=$("pg");
+const voice=()=>{const v=speechSynthesis.getVoices();return v.find(x=>x.lang==="en-GB")||v.find(x=>x.lang.startsWith("en"))};
+const R={Marley:.8,Future:.8,"Tiny Tim":.92,Present:.9};
+function say(t,sp){return new Promise(r=>{if(!window.speechSynthesis)return r();const parts=(t.match(/[^.!?…]+[.!?…]*/g)||[t]).map(s=>s.trim()).filter(Boolean);if(!parts.length)return r();const vs=speechSynthesis.getVoices().filter(x=>x.lang.startsWith("en")),k=Object.keys(P).indexOf(sp),v=(k>=0&&vs.length?vs[k%vs.length]:null)||voice();
+parts.forEach((s,i)=>{const u=new SpeechSynthesisUtterance(s);u.lang="en-GB";let p=P[sp]||1,q=rate*(R[sp]||1);if(sp==="Narrator")q*=.95;
+if(/!$/.test(s)){p*=1.15;q*=1.08}else if(/\?$/.test(s)){p*=1.2;q*=.95}else if(/…$/.test(s)){q*=.8;p*=.9}
+if(/^(Bah|Stop|No)\b/.test(s)){p*=.9;q*=1.05}
+u.pitch=Math.min(2,p);u.rate=Math.max(.5,Math.min(1.6,q));if(v)u.voice=v;if(i===parts.length-1)u.onend=u.onerror=r;speechSynthesis.speak(u)})})}
+function stop(){run++;if(window.speechSynthesis)speechSynthesis.cancel();if(go){go();go=null}document.querySelectorAll(".line.on").forEach(e=>e.classList.remove("on"));const b=$("pl");if(b)b.textContent="▶ Listen to the scene"}
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+function scene(i){const s=S[i],cast=[...new Set(s.l.map(x=>x[0]))].filter(x=>x!=="Narrator");
+pg.innerHTML=`<h2>${s.t}</h2><div class="tools"><button id="pl" class="pri">▶ Listen to the scene</button><label>Speed <input id="sp" type="range" min=".6" max="1.2" step=".1" value="${rate}"></label><label>Role-play: <select id="rl"><option value="">listen only</option>${cast.map(c=>`<option ${c===role?"selected":""}>${c}</option>`).join("")}</select></label></div><div id="ls">${s.l.map((x,k)=>`<div class="line${x[0]===role?" mine":""}" data-k="${k}" tabindex="0"><span class="who${x[0]==="Narrator"?" n":""}">${x[0]==="Narrator"?"":esc(x[0])}</span><span class="txt">${esc(x[1])}</span></div>`).join("")}</div>`;
+$("sp").oninput=e=>rate=+e.target.value;
+$("rl").onchange=e=>{role=e.target.value;stop();scene(i)};
+const L=[...pg.querySelectorAll(".line")];
+const one=k=>{stop();L[k].classList.add("on");say(s.l[k][1],s.l[k][0]).then(()=>L[k].classList.remove("on"))};
+L.forEach((e,k)=>{e.onclick=()=>one(k);e.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();one(k)}}});
+$("pl").onclick=async()=>{if($("pl").textContent.startsWith("■")){stop();return}
+stop();const my=run;$("pl").textContent="■ Stop";
+for(let k=0;k<L.length&&my===run;k++){L.forEach(e=>e.classList.remove("on"));L[k].classList.add("on");L[k].scrollIntoView({block:"center",behavior:"smooth"});
+if(s.l[k][0]===role){const b=document.createElement("button");b.textContent="I read it ✓";b.className="pri";L[k].append(b);await new Promise(r=>{go=r;b.onclick=e=>{e.stopPropagation();r()}});go=null;b.remove()}
+else await say(s.l[k][1],s.l[k][0])}
+if(my===run)stop()}}
+function act(i){const [t,d,lis,items]=A[i];let sc=0,done=0;
+pg.innerHTML=`<h2>${t}</h2><p>${d}</p>${items.map((q,k)=>`<div class="q"><p>${lis?`<button data-p="${k}">▶ Play</button>`:esc(q[0])}</p><div class="opts">${q[1].map((o,j)=>`<button data-k="${k}" data-j="${j}">${esc(o)}</button>`).join("")}</div></div>`).join("")}<p class="score" id="sc"></p>`;
+pg.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{stop();say(items[b.dataset.p][0],"")});
+pg.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,j=+b.dataset.j,q=items[k],g=b.parentElement;if(g.dataset.d)return;g.dataset.d=1;done++;
+if(j===q[2]){b.classList.add("ok");sc++}else{b.classList.add("no");g.children[q[2]].classList.add("ok")}
+if(done===items.length)$("sc").textContent=`Score: ${sc} / ${items.length}${sc===items.length?" – Excellent! 🎄":""}`})}
+function draw(){stop();const p=pages[cur];
+if(p.c)pg.innerHTML=`<div class="cover"><div style="font-size:3rem">🎄</div><h1>A Christmas Carol</h1><p>After Charles Dickens – a class play in six scenes.</p><p>Read the story, press <b>Listen</b> to hear each scene, choose a character for role-play, then try four activities.</p><button class="pri" onclick="go2(1)">Open the book</button></div>`;
+else if(p.s!==undefined)scene(p.s);else if(p.a!==undefined)act(p.a);
+else pg.innerHTML=`<div class="cover"><h1>The End</h1><p>Scrooge keeps Christmas in his heart every day.</p><button onclick="go2(0)">Back to the cover</button></div>`;
+$("dots").innerHTML=pages.map((_,k)=>`<i class="${k===cur?"c":""}" onclick="go2(${k})" title="Page ${k+1}"></i>`).join("");
+$("pv").disabled=cur===0;$("nx").disabled=cur===pages.length-1;scrollTo(0,0)}
+function go2(k){cur=Math.max(0,Math.min(pages.length-1,k));draw()}
+$("pv").onclick=()=>go2(cur-1);$("nx").onclick=()=>go2(cur+1);
+addEventListener("keydown",e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;if(e.key==="ArrowRight")go2(cur+1);if(e.key==="ArrowLeft")go2(cur-1)});
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=()=>{};
+draw();
+</script></body></html>
